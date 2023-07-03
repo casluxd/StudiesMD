@@ -1,0 +1,9 @@
+RPC significa Remote Procedure Call (Chamada Remota de Procedimento, em tradução livre). É um protocolo de comunicação utilizado em sistemas distribuídos para permitir que um programa solicite a execução de um procedimento (função ou método) em um computador remoto.
+
+O conceito básico do RPC é permitir que um programa em um computador (chamado de cliente) chame um procedimento em outro computador (chamado de servidor), como se o procedimento estivesse sendo chamado localmente. O RPC oculta os detalhes da comunicação entre o cliente e o servidor, tornando a interação transparente para o programa que está fazendo a chamada.
+
+Quando o cliente faz uma chamada de procedimento remoto, os parâmetros da chamada são empacotados e enviados para o servidor remoto através da rede. O servidor recebe a chamada, executa o procedimento solicitado com os parâmetros fornecidos e retorna os resultados para o cliente. O cliente, então, continua a execução com os resultados recebidos.
+
+O RPC é usado em uma ampla variedade de aplicações, desde sistemas distribuídos complexos até comunicações entre processos em um mesmo computador. Ele facilita a criação de sistemas distribuídos, permitindo que diferentes componentes se comuniquem e cooperem entre si, independentemente de onde estejam localizados fisicamente.
+
+Existem várias implementações de RPC disponíveis, como o gRPC (um framework RPC de alto desempenho desenvolvido pelo Google), o XML-RPC (que utiliza XML para codificar as chamadas) e o JSON-RPC (que utiliza JSON). Cada uma dessas implementações possui suas próprias características e padrões de comunicação.

@@ -1,0 +1,2 @@
+
+Recebemos um arquivo de captura de pacote que contém dados de uma sessão da Web não criptografada. Há uma imagem incorporada que precisa ser usada como evidência de uso impróprio da rede. O gerente de segurança acha que o usuário está enviando mensagens escondidas atrás da imagem. Usando o Wireshark, aplique filtros para localizar e extrair as evidências.

@@ -1,0 +1,2 @@
+
+Criar um script PowerShell e colocá-lo em execução e toda vez que o sistema startar, enviar as informações do usuário logado para algum local. Essas informações incluem: nome do usuário, grupo, permissões, etc.

@@ -1,0 +1,65 @@
+
+As contas de usuário são criadas em ambos os sistemas locais (não associados ao AD) e no Active Directory para dar a uma pessoa ou programa (como um serviço do sistema) a capacidade de fazer logon em um computador e acessar recursos com base em seus direitos. Quando um usuário faz login, o sistema verifica sua senha e cria um token de acesso. Esse token descreve o conteúdo de segurança de um processo ou encadeamento e inclui a identidade de segurança do usuário e a associação ao grupo. Sempre que um usuário interage com um processo, esse token é apresentado. As contas de usuário são usadas para permitir que funcionários/contratados façam login em um computador e acessem recursos, para executar programas ou serviços em um contexto de segurança específico (ou seja, executando como um usuário altamente privilegiado em vez de uma conta de serviço de rede) e para gerenciar o acesso a objetos e suas propriedades, como compartilhamentos de arquivos de rede, arquivos, aplicativos, etc. Os usuários podem ser atribuídos a grupos que podem conter um ou mais membros. Esses grupos também podem ser usados ​​para controlar o acesso aos recursos. Pode ser mais fácil para um administrador atribuir privilégios uma vez a um grupo (que todos os membros do grupo herdam) em vez de várias vezes para cada usuário individual. Isso ajuda a simplificar a administração e torna mais fácil conceder e revogar direitos de usuário.
+
+A capacidade de provisionar e gerenciar contas de usuário é um dos principais elementos do Active Directory. Normalmente, toda empresa que encontramos terá pelo menos uma conta de usuário do AD provisionada por usuário. Alguns usuários podem ter duas ou mais contas provisionadas com base em sua função de trabalho (ou seja, um administrador de TI ou membro do Help Desk). Além das contas padrão de usuário e administrador vinculadas a um usuário específico, frequentemente veremos muitas contas de serviço usadas para executar um determinado aplicativo ou serviço em segundo plano ou executar outras funções vitais no ambiente de domínio. Uma organização com 1.000 funcionários pode ter 1.200 contas de usuário ativas ou mais! Também podemos ver organizações com centenas de contas desativadas de ex-funcionários, funcionários temporários/sazonais, estagiários, etc. Algumas empresas devem reter registros dessas contas para fins de auditoria, portanto, as desativarão (e, com sorte, removerão todos os privilégios) assim que o funcionário for demitido, mas eles não os excluirão. É comum ver uma UO como FORMER EMPLOYEES que conterá muitas contas desativadas.
+
+![[Pasted image 20230602004446.png]]
+
+Como veremos mais adiante neste módulo, as contas de usuário podem receber muitos direitos no Active Directory. Eles podem ser configurados basicamente como usuários somente leitura que têm acesso de leitura à maior parte do ambiente (que são as permissões que um usuário de domínio padrão recebe) até Enterprise Admin (com controle completo de cada objeto no domínio) e inúmeras combinações intermediárias. Como os usuários podem ter tantos direitos atribuídos a eles, eles também podem ser configurados incorretamente com relativa facilidade e concedeu direitos não intencionais que um invasor ou um testador de penetração pode aproveitar. As contas de usuário apresentam uma imensa superfície de ataque e geralmente são um foco importante para ganhar uma posição durante um teste de penetração. As contas de usuário apresentam uma imensa superfície de ataque e geralmente são um foco importante para ganhar uma posição durante um teste de penetração. Os usuários geralmente são o elo mais fraco em qualquer organização. É difícil gerenciar o comportamento humano e contabilizar cada usuário escolhendo senhas fracas ou compartilhadas, instalando software não autorizado ou administradores cometendo erros descuidados ou sendo excessivamente permissivos com o gerenciamento de contas. Para combater isso, uma organização precisa ter políticas e procedimentos para combater problemas que possam surgir em torno de contas de usuário e deve ter defesa em profundidade para mitigar o risco inerente que os usuários trazem para o domínio.
+
+Detalhes sobre configurações incorretas e ataques relacionados ao usuário estão fora do escopo deste módulo. Ainda assim, é importante entender o impacto absoluto que os usuários podem ter em qualquer rede do Active Directory e entender as nuances entre os diferentes tipos de usuários/contas que podemos encontrar.
+
+# Local Accounts
+
+As contas locais são armazenadas localmente em um determinado servidor ou estação de trabalho. Essas contas podem receber direitos nesse host individualmente ou por meio de associação de grupo. Quaisquer direitos atribuídos só podem ser concedidos a esse host específico e não funcionarão no domínio. As contas de usuário local são consideradas entidades de segurança, mas só podem gerenciar o acesso e proteger recursos em um host autônomo. Existem várias contas de usuário local padrão criadas em um sistema Windows:
+- Administrator: sua conta tem o SID S-1-5-domain-500 e é a primeira conta criada com uma nova instalação do Windows. Ele tem controle total sobre quase todos os recursos do sistema. Ele não pode ser excluído ou bloqueado, mas pode ser desativado ou renomeado. Os hosts do Windows 10 e do Server 2016 desativam a conta interna do administrador por padrão e criam outra conta local no grupo do administrador local durante a instalação.
+- Guest: esta conta está desativada por padrão. O objetivo desta conta é permitir que usuários sem conta no computador façam login temporariamente com direitos de acesso limitados. Por padrão, ele tem uma senha em branco e geralmente é recomendável deixá-lo desativado devido ao risco de segurança de permitir acesso anônimo a um host.
+- System:  A conta SYSTEM (ou `NT AUTHORITY\SYSTEM`) em um host Windows é a conta padrão instalada e usada pelo sistema operacional para executar muitas de suas funções internas. Ao contrário da conta Root no Linux, o SYSTEM é uma conta de serviço e não é executado inteiramente no mesmo contexto de um usuário comum. Muitos dos processos e serviços executados em um host são executados no contexto do SISTEMA. Uma coisa a observar com esta conta é que não existe um perfil para ela, mas ela terá permissões sobre quase tudo no host. Ele não aparece no Gerenciador de usuários e não pode ser adicionado a nenhum grupo. Uma conta SYSTEM é o nível de permissão mais alto que se pode alcançar em um host Windows e, por padrão, recebe permissões de Controle Total para todos os arquivos em um sistema Windows.
+- Network Service: Esta é uma conta local predefinida usada pelo Service Control Manager (SCM) para executar serviços do Windows. Quando um serviço é executado no contexto dessa conta específica, ele apresenta credenciais para serviços remotos.
+- Local Service: Esta é outra conta local predefinida usada pelo Service Control Manager (SCM) para executar serviços do Windows. Ele é configurado com privilégios mínimos no computador e apresenta credenciais anônimas à rede. 
+
+Vale a pena estudar detalhadamente a documentação da Microsoft sobre contas padrão locais(https://learn.microsoft.com/en-us/windows/security/identity-protection/access-control/local-accounts) para entender melhor como as várias contas funcionam juntas em um sistema Windows individual e em uma rede de domínio.
+
+# Domain Users
+
+Os usuários de domínio diferem dos usuários locais porque recebem direitos do domínio para acessar recursos como servidores de arquivos, impressoras, hosts de intranet, e outros objetos com base nas permissões concedidas à conta de usuário ou ao grupo do qual a conta é membro. As contas de usuário do domínio podem fazer login em qualquer host no domínio, ao contrário dos usuários locais. Para obter mais informações sobre os diversos tipos de conta do Active Directory, confira este link. Uma conta a ter em mente é a conta KRBTGT, no entanto. Este é um tipo de conta local incorporada à infraestrutura do AD. Essa conta atua como uma conta de serviço para o serviço Key Distribution, fornecendo autenticação e acesso a recursos de domínio. Essa conta é um alvo comum de muitos invasores, pois obter controle ou acesso permitirá que um invasor tenha acesso irrestrito ao domínio. Ele pode ser aproveitado para escalonamento de privilégios e persistência em um domínio por meio de ataques como o ataque Golden Ticket.
+
+## User Naming Attributes
+
+A segurança no Active Directory pode ser aprimorada usando um conjunto de atributos de nomenclatura de usuário para ajudar a identificar objetos de usuário como nome de logon ou ID. A seguir estão alguns atributos de nomeação importantes no AD:
+- UserPrincipalName(UPN): Este é o nome de logon principal do usuário. Por convenção, o UPN usa o endereço de e-mail do usuário.
+- ObjectGUID: Este é um identificador exclusivo do usuário. No AD, o nome do atributo ObjectGUID nunca muda e permanece exclusivo mesmo se o usuário for removido.
+- SAMAccountName: Este é um nome de logon que oferece suporte à versão anterior de clientes e servidores Windows.
+- objectSID: O identificador de segurança (SID) do usuário. Este atributo identifica um usuário e suas associações de grupo durante as interações de segurança com o servidor.
+- sIDHistory: Isso contém SIDs anteriores para o objeto de usuário se movido de outro domínio e normalmente é visto em cenários de migração de domínio para domínio. Após a ocorrência de uma migração, o último SID será adicionado à propriedade sIDHistory e o novo SID se tornará seu objectSID.
+
+```powershell-session
+PS C:\htb Get-ADUser -Identity htb-student
+
+DistinguishedName : CN=htb student,CN=Users,DC=INLANEFREIGHT,DC=LOCAL
+Enabled           : True
+GivenName         : htb
+Name              : htb student
+ObjectClass       : user
+ObjectGUID        : aa799587-c641-4c23-a2f7-75850b4dd7e3
+SamAccountName    : htb-student
+SID               : S-1-5-21-3842939050-3880317879-2865463114-1111
+Surname           : student
+UserPrincipalName : htb-student@INLANEFREIGHT.LOCAL
+```
+
+Para uma visão mais profunda dos atributos do objeto do usuário, confira esta página(https://learn.microsoft.com/en-us/windows/win32/ad/user-object-attributes). Muitos atributos podem ser definidos para qualquer objeto no AD. Muitos objetos nunca serão usados ​​ou não são relevantes para nós como profissionais de segurança. Ainda assim, é essencial nos familiarizarmos com os mais comuns e mais obscuros que podem conter dados confidenciais ou ajudar a montar um ataque.
+
+## Domain-joined vs Non-Domain-joined Machines
+
+Quando se trata de recursos de computador, existem várias maneiras pelas quais eles são normalmente gerenciados. A seguir, discutiremos as diferenças entre um host associado a um domínio e um host que está apenas em um grupo de trabalho.
+
+## Domain joined
+
+Os hosts associados a um domínio têm maior facilidade de compartilhamento de informações dentro da empresa e um ponto de gerenciamento central (o DC) para coletar recursos, políticas e atualizações. Um host associado a um domínio adquirirá todas as configurações ou alterações necessárias por meio da Diretiva de Grupo do domínio. O benefício aqui é que um usuário no domínio pode efetuar login e acessar recursos de qualquer host associado ao domínio, não apenas aquele em que trabalham. Esta é a configuração típica que você verá em ambientes corporativos.
+
+## Non-Domain joined
+
+Computadores não associados ao domínio ou computadores em um grupo de trabalho não são gerenciados pela diretiva de domínio. Com isso em mente, compartilhar recursos fora de sua rede local é muito mais complicado do que seria em um domínio. Isso é bom para computadores destinados a uso doméstico ou clusters de pequenas empresas na mesma LAN. A vantagem dessa configuração é que os usuários individuais são responsáveis ​​por quaisquer alterações que desejem fazer em seu host. Todas as contas de usuário em um computador de grupo de trabalho existem apenas nesse host e os perfis não são migrados para outros hosts dentro do grupo de trabalho.
+
+É importante observar que uma conta de máquina (`NT AUTHORITY\SYSTEM` level access) em um ambiente AD terá praticamente os mesmos direitos que uma conta de usuário de domínio padrão. Isso é importante porque nem sempre precisamos obter um conjunto de credenciais válidas para uma conta de usuário individual para começar a enumerar e atacar um domínio (como veremos em módulos posteriores). Podemos obter acesso de nível SYSTEM a um host do Windows ingressado no domínio por meio de uma exploração de execução remota de código bem-sucedida ou escalando privilégios em um host. Esse acesso geralmente é ignorado como útil apenas para pilhar dados confidenciais (ou seja, senhas, chaves SSH, arquivos confidenciais etc.) em um host específico. Na realidade, o acesso no contexto da conta SYSTEM nos permitirá acesso de leitura a muitos dos dados dentro do domínio e é um ótimo ponto de partida para coletar o máximo de informações sobre o domínio quanto possível antes de prosseguir com os ataques relacionados ao AD aplicáveis.

@@ -1,0 +1,13 @@
+O Windows Server Core foi lançado pela primeira vez com o Windows Server 2008 como um ambiente de servidor minimalista contendo apenas as principais funcionalidades do servidor. Como resultado, o Server Core tem requisitos de gerenciamento mais baixos, uma superfície de ataque menor e usa menos espaço em disco e memória do que sua contraparte de Desktop Experience (GUI). No Server Core, todas as tarefas de configuração e manutenção são executadas via linha de comando, PowerShell ou gerenciamento remoto com MMC ou Remote Server Administration Tools (RSAT).
+
+Embora o Server Core pretenda ter uma pegada menor por falta de uma GUI, alguns programas gráficos ainda são suportados, como Editor do Registro, Bloco de Notas, Informações do Sistema, Windows Installer, Gerenciador de Tarefas e PowerShell. Ele também oferece suporte a algumas ferramentas do pacote Sysinternals, como Active Directory Explorer, Process Explorer, Process Monitor e TCPView.
+
+A partir do Windows Server 2019, Server Core ou Desktop Experience devem ser selecionados na instalação e nenhum deles pode ser revertido (ou seja, converter Server Core em Desktop Experience). Depois de instalado, a configuração inicial do Server Core pode ser feita via Sconfig, que é uma interface baseada em texto (na verdade, um VBScript executado pelo WScript). O Sconfig é usado para executar uma variedade de comandos comuns, como configuração de rede, verificação/instalação de atualizações do Windows, gerenciamento de contas, configuração de gerenciamento remoto, ativação do Windows e muito mais.
+
+![image](https://academy.hackthebox.com/storage/modules/49/sconfig.png)
+
+Certos aplicativos de servidor não podem ser executados no Server Core, incluindo Microsoft Server Virtual Machine Manager 2019 (SCVMM), System Center Data Protection Manager 2019, SharePoint Server 2019, Project Server 2019. 
+
+Em resumo, o Server Core é mais leve e consome menos recursos, mas tem uma curva de aprendizado mais acentuada e pode ser mais difícil de gerenciar. Ele também possui algumas limitações, como executar tarefas de gerenciamento usando determinados programas GUI.
+
+Em qualquer ambiente, a determinação entre usar o Desktop Experience ou o Server Core para uma instalação de servidor deve ser feita tanto pela necessidade comercial quanto pelo uso pretendido do servidor e o nível de habilidade dos administradores responsáveis ​​por mantê-lo. A tabela a seguir mostra alguns dos aplicativos disponíveis no Server Core vs. Desktop Experience. Esta é uma lista de aplicativos comuns e não uma lista exaustiva.
