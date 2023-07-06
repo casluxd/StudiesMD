@@ -69,3 +69,12 @@ Exemplo:
 
 Esse comando redireciona a saída do ls -l para o tee, que é responsável por gravar no arquivo1 e redirecionar a saída para a tela ao mesmo tempo.
 
+# FIFOs
+
+Um pipe é um mecanismo para comunicação entre processos; os dados gravados no pipe por um processo podem ser lidos por outro processo. Os dados são tratados na ordem FIFO (first-in, first-out). O pipe não tem nome; é criado para um uso e ambas as extremidades devem ser herdadas do único processo que criou o pipe.
+
+O arquivo especial FIFO é similar ao pipe, mas ao invés de ser uma conexão anônima e temporária, um FIFO tem um nome ou nomes como qualquer outro arquivo. Os processos abrem o FIFO pelo nome para se comunicar através dele.
+
+Um pipe ou FIFO deve ser aberto em ambas as extremidades simultaneamente. Se você ler de um pipe ou arquivo FIFO que não possui nenhum processo gravando nele (talvez porque todos eles fecharam o arquivo ou saíram), a leitura retorna o fim do arquivo.
+
+Nem os pipes ou FIFOs permitem o file positioning. Ambas as operações de leitura e escrita acontecem sequencialmente; lendo desde o início do arquivo e escrevendo no final.
